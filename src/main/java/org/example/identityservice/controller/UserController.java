@@ -1,10 +1,13 @@
 package org.example.identityservice.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.identityservice.DTO.request.UserCreationRequest;
 import org.example.identityservice.DTO.request.UserUpdateRequest;
+import org.example.identityservice.DTO.response.ApiResponse;
 import org.example.identityservice.entity.User;
 import org.example.identityservice.service.interfaces.IUserService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,8 +19,10 @@ public class UserController {
     private final IUserService userService;
 
     @PostMapping("/create")
-    public User createUser(@RequestBody UserCreationRequest request) {
-        return userService.createUser(request);
+    public ResponseEntity<ApiResponse<User>> createUser(@RequestBody @Valid UserCreationRequest request) {
+        ApiResponse<User> response = new ApiResponse<>();
+        response.setResult(userService.createUser(request));
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/get-all")
