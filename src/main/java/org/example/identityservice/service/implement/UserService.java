@@ -3,56 +3,63 @@ package org.example.identityservice.service.implement;
 import lombok.RequiredArgsConstructor;
 import org.example.identityservice.DTO.request.UserCreationRequest;
 import org.example.identityservice.DTO.request.UserUpdateRequest;
+import org.example.identityservice.DTO.response.UserResponse;
 import org.example.identityservice.entity.User;
 import org.example.identityservice.exception.AppException;
 import org.example.identityservice.exception.ErrorCode;
+import org.example.identityservice.mapper.UserMapper;
 import org.example.identityservice.repository.UserRepository;
 import org.example.identityservice.service.interfaces.IUserService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class UserService implements IUserService {
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
     @Override
-    public User createUser(UserCreationRequest request) {
+    public UserResponse createUser(UserCreationRequest request) {
         if (userRepository.existsByUsername(request.getUsername())) {
             throw new AppException(ErrorCode.USER_EXISTED);
         }
 
-        User user = new User();
-        user.setFirstName(request.getFirstName());
-        user.setLastName(request.getLastName());
-        user.setDateOfBirth(request.getDateOfBirth());
-        user.setUsername(request.getUsername());
-        user.setPassword(request.getPassword());
+        User user = userMapper.mapUserCreationRequestToUser(request);
 
-        return userRepository.save(user);
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+
+        return userMapper.mapUserToUserResponse(userRepository.save(user));
     }
 
     @Override
-    public List<User> getUsers() {
-        return userRepository.findAll();
+    public List<UserResponse> getUsers() {
+        return userRepository.findAll()
+                .stream()
+                .map(userMapper::mapUserToUserResponse).collect(Collectors.toList());
     }
 
     @Override
-    public User getUser(String id) {
-        return userRepository.findById(id)
+    public UserResponse getUser(String id) {
+        User user = userRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        return userMapper.mapUserToUserResponse(user);
     }
 
     @Override
-    public User updateUser(String userId, UserUpdateRequest request) {
-        User user = getUser(userId);
-        user.setFirstName(request.getFirstName());
-        user.setLastName(request.getLastName());
-        user.setDateOfBirth(request.getDateOfBirth());
-        user.setPassword(request.getPassword());
+    public UserResponse updateUser(String userId, UserUpdateRequest request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
-        return userRepository.save(user);
+        userMapper.updateUser(user, request);
+
+        return userMapper.mapUserToUserResponse(userRepository.save(user));
     }
 
     @Override

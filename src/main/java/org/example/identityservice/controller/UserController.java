@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.identityservice.DTO.request.UserCreationRequest;
 import org.example.identityservice.DTO.request.UserUpdateRequest;
 import org.example.identityservice.DTO.response.ApiResponse;
-import org.example.identityservice.entity.User;
+import org.example.identityservice.DTO.response.UserResponse;
 import org.example.identityservice.service.interfaces.IUserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,30 +19,48 @@ public class UserController {
     private final IUserService userService;
 
     @PostMapping("/create")
-    public ResponseEntity<ApiResponse<User>> createUser(@RequestBody @Valid UserCreationRequest request) {
-        ApiResponse<User> response = new ApiResponse<>();
-        response.setResult(userService.createUser(request));
+    public ResponseEntity<ApiResponse<UserResponse>> createUser(@RequestBody @Valid UserCreationRequest request) {
+        ApiResponse<UserResponse> response = ApiResponse.<UserResponse>builder()
+                .result(userService.createUser(request))
+                .build();
+
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/get-all")
-    public List<User> getUsers() {
-        return userService.getUsers();
+    public ResponseEntity<ApiResponse<List<UserResponse>>> getUsers() {
+        ApiResponse<List<UserResponse>> response = ApiResponse.<List<UserResponse>>builder()
+                .result(userService.getUsers())
+                .build();
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{userId}")
-    public User getUser(@PathVariable("userId") String id) {
-        return userService.getUser(id);
+    public ResponseEntity<ApiResponse<UserResponse>> getUser(@PathVariable("userId") String id) {
+        ApiResponse<UserResponse> response = ApiResponse.<UserResponse>builder()
+                .result(userService.getUser(id))
+                .build();
+
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{userId}")
-    public User updateUser(@PathVariable("userId") String id, @RequestBody UserUpdateRequest request) {
-        return userService.updateUser(id, request);
+    public ResponseEntity<ApiResponse<UserResponse>> updateUser(@PathVariable("userId") String id, @RequestBody UserUpdateRequest request) {
+        ApiResponse<UserResponse> response = ApiResponse.<UserResponse>builder()
+                .result(userService.updateUser(id, request))
+                .build();
+
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{userId}")
-    public String deleteUser(@PathVariable("userId") String id) {
+    public ResponseEntity<ApiResponse<String>> deleteUser(@PathVariable("userId") String id) {
         userService.deleteUser(id);
-        return "User has been deleted";
+        return ResponseEntity.ok(
+                ApiResponse.<String>builder()
+                        .result("User has been deleted")
+                        .build()
+        );
     }
 }

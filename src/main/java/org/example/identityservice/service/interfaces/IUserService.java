@@ -2,18 +2,18 @@ package org.example.identityservice.service.interfaces;
 
 import org.example.identityservice.DTO.request.UserCreationRequest;
 import org.example.identityservice.DTO.request.UserUpdateRequest;
-import org.example.identityservice.entity.User;
+import org.example.identityservice.DTO.response.UserResponse;
 
 import java.util.List;
 
 public interface IUserService {
-    User createUser(UserCreationRequest request);
+    UserResponse createUser(UserCreationRequest request);
 
-    List<User> getUsers();
+    List<UserResponse> getUsers();
 
-    User getUser(String id);
+    UserResponse getUser(String id);
 
-    User updateUser(String userId, UserUpdateRequest request);
+    UserResponse updateUser(String userId, UserUpdateRequest request);
 
     void deleteUser(String userId);
 }
