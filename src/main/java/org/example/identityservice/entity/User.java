@@ -1,16 +1,20 @@
 package org.example.identityservice.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
@@ -20,5 +24,5 @@ public class User {
     private String firstName;
     private String lastName;
     private LocalDate dateOfBirth;
-
+    private Set<String> roles;
 }

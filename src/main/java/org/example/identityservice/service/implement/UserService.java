@@ -5,15 +5,16 @@ import org.example.identityservice.DTO.request.UserCreationRequest;
 import org.example.identityservice.DTO.request.UserUpdateRequest;
 import org.example.identityservice.DTO.response.UserResponse;
 import org.example.identityservice.entity.User;
+import org.example.identityservice.enums.Role;
 import org.example.identityservice.exception.AppException;
 import org.example.identityservice.exception.ErrorCode;
 import org.example.identityservice.mapper.UserMapper;
 import org.example.identityservice.repository.UserRepository;
 import org.example.identityservice.service.interfaces.IUserService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 public class UserService implements IUserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public UserResponse createUser(UserCreationRequest request) {
@@ -31,8 +33,11 @@ public class UserService implements IUserService {
 
         User user = userMapper.mapUserCreationRequestToUser(request);
 
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
+
+        HashSet<String> roles = new HashSet<>();
+        roles.add(Role.USER.name());
+        user.setRoles(roles);
 
         return userMapper.mapUserToUserResponse(userRepository.save(user));
     }

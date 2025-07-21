@@ -25,6 +25,7 @@ import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.StringJoiner;
 
 @Slf4j
 @Service
@@ -48,7 +49,7 @@ public class AuthService implements IAuthService {
             throw new AppException(ErrorCode.UNAUTHENTICATED);
         }
 
-        String token = generateToken(request.getUsername());
+        String token = generateToken(user);
 
         return AuthenticationResponse.builder()
                 .isAuthenticated(true)
@@ -72,17 +73,17 @@ public class AuthService implements IAuthService {
                 .build();
     }
 
-    private String generateToken(String username) {
+    private String generateToken(User user) {
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
 
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
-                .subject(username)//đại dien user login
+                .subject(user.getUsername())//đại dien user login
                 .issuer("Identity Service")
                 .issueTime(new Date())
                 .expirationTime(new Date(
                         Instant.now().plus(1, ChronoUnit.HOURS).toEpochMilli()
                 )) // thời hạn su dụng
-                .claim("customClaim", "Custom")
+                .claim("scope", buildScope(user))
                 .build();
 
         Payload payload = new Payload(jwtClaimsSet.toJSONObject());
@@ -97,5 +98,14 @@ public class AuthService implements IAuthService {
         }
 
         return jwsObject.serialize();
+    }
+
+    private String buildScope(User user) {
+        StringJoiner scopeJoiner = new StringJoiner(" ");
+        if (user.getRoles() != null) {
+            user.getRoles().forEach(scopeJoiner::add);
+        }
+
+        return scopeJoiner.toString();
     }
 }
