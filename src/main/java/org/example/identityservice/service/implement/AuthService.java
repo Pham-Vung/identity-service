@@ -102,9 +102,9 @@ public class AuthService implements IAuthService {
 
     private String buildScope(User user) {
         StringJoiner scopeJoiner = new StringJoiner(" ");
-        if (user.getRoles() != null) {
-            user.getRoles().forEach(scopeJoiner::add);
-        }
+//        if (user.getRoles() != null) {
+//            user.getRoles().forEach(scopeJoiner::add);
+//        }
 
         return scopeJoiner.toString();
     }

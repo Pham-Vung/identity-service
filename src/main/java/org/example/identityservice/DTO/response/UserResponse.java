@@ -1,6 +1,7 @@
 package org.example.identityservice.DTO.response;
 
 import lombok.*;
+import org.example.identityservice.entity.Role;
 
 import java.time.LocalDate;
 import java.util.Set;
@@ -16,5 +17,5 @@ public class UserResponse {
     private String firstName;
     private String lastName;
     private LocalDate dateOfBirth;
-    private Set<String> roles;
+    private Set<Role> roles;
 }
