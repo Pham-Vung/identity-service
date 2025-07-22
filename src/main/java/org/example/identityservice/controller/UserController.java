@@ -65,4 +65,13 @@ public class UserController {
                         .build()
         );
     }
+
+    @GetMapping("/myInfo")
+    public ResponseEntity<ApiResponse<UserResponse>> getMyInfo() {
+        ApiResponse<UserResponse> response = ApiResponse.<UserResponse>builder()
+                .result(userService.getMyInfo())
+                .build();
+
+        return ResponseEntity.ok(response);
+    }
 }

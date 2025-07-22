@@ -1,6 +1,7 @@
 package org.example.identityservice.service.implement;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.identityservice.DTO.request.UserCreationRequest;
 import org.example.identityservice.DTO.request.UserUpdateRequest;
 import org.example.identityservice.DTO.response.UserResponse;
@@ -11,6 +12,9 @@ import org.example.identityservice.exception.ErrorCode;
 import org.example.identityservice.mapper.UserMapper;
 import org.example.identityservice.repository.UserRepository;
 import org.example.identityservice.service.interfaces.IUserService;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +22,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserService implements IUserService {
@@ -43,14 +48,20 @@ public class UserService implements IUserService {
     }
 
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
+    // kiểm tra trước khi gọi method phải có role hợp lệ thì method mới thực thi, còn lại thì k thực thi
     public List<UserResponse> getUsers() {
+        log.info("In method getUsers");
         return userRepository.findAll()
                 .stream()
                 .map(userMapper::mapUserToUserResponse).collect(Collectors.toList());
     }
 
     @Override
+    @PostAuthorize("returnObject.username == authentication.name")
+    // được sử dụng sau khi method thực hiện xong, nếu có role hợp lệ mới trả về kết quả
     public UserResponse getUser(String id) {
+        log.info("In method getUser by Id");
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
@@ -70,6 +81,17 @@ public class UserService implements IUserService {
     @Override
     public void deleteUser(String userId) {
         userRepository.deleteById(userId);
+    }
+
+    @Override
+    public UserResponse getMyInfo() {
+        var context = SecurityContextHolder.getContext();
+        String name = context.getAuthentication().getName();
+
+        User user = userRepository.findByUsername(name)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        return userMapper.mapUserToUserResponse(user);
     }
 
 }

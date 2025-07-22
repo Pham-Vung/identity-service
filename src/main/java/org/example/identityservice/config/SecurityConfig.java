@@ -1,10 +1,10 @@
 package org.example.identityservice.config;
 
-import org.example.identityservice.enums.Role;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -21,6 +21,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfig {
     private final String[] PUBLIC_URLS = {"/users/create", "/auth/log-ịn", "/auth/introspect"};
 
@@ -37,9 +38,9 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(requests ->
-                        requests.requestMatchers(HttpMethod.POST, PUBLIC_URLS).permitAll()
-                                .requestMatchers(HttpMethod.GET, "/users/get-all").hasRole(Role.ADMIN.name())
-                                .anyRequest().authenticated()
+                                requests.requestMatchers(HttpMethod.POST, PUBLIC_URLS).permitAll()
+//                                .requestMatchers(HttpMethod.GET, "/users/get-all").hasRole(Role.ADMIN.name())
+                                        .anyRequest().authenticated()
                 );
 
 
@@ -50,7 +51,7 @@ public class SecurityConfig {
         //"Mỗi request phải có JWT trong header. Và khi nhận được, hãy dùng hàm jwtDecoder() để kiểm tra và phân tích token đó."
         http.oauth2ResourceServer(oauth2 ->
                 oauth2.jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder())
-                        .jwtAuthenticationConverter(jwtAuthenticationConverter()))
+                        .jwtAuthenticationConverter(jwtAuthenticationConverter())) // chuyển JWT -> Authentication
 
         );
 
@@ -59,7 +60,7 @@ public class SecurityConfig {
 
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
-        JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
+        JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();// lâấy ra quyền từ claim scope
         grantedAuthoritiesConverter.setAuthorityPrefix("ROLE_");
 
         JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
