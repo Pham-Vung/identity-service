@@ -50,9 +50,10 @@ public class SecurityConfig {
         // 👉 Tóm lại: Đây là nơi nói với Spring Security rằng:
         //"Mỗi request phải có JWT trong header. Và khi nhận được, hãy dùng hàm jwtDecoder() để kiểm tra và phân tích token đó."
         http.oauth2ResourceServer(oauth2 ->
-                oauth2.jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder())
-                        .jwtAuthenticationConverter(jwtAuthenticationConverter())) // chuyển JWT -> Authentication
-
+                oauth2.jwt(jwtConfigurer ->
+                                jwtConfigurer.decoder(jwtDecoder())
+                                        .jwtAuthenticationConverter(jwtAuthenticationConverter())) // chuyển JWT -> Authentication
+                        .authenticationEntryPoint(new JwtAuthenticationEntryPoint()) // xảy ra ngoại lệ trong filterChain sẽ xử lý ở đây
         );
 
         return http.build();
