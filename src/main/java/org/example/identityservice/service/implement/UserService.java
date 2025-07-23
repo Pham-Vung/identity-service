@@ -10,6 +10,7 @@ import org.example.identityservice.enums.Role;
 import org.example.identityservice.exception.AppException;
 import org.example.identityservice.exception.ErrorCode;
 import org.example.identityservice.mapper.UserMapper;
+import org.example.identityservice.repository.RoleRepository;
 import org.example.identityservice.repository.UserRepository;
 import org.example.identityservice.service.interfaces.IUserService;
 import org.springframework.security.access.prepost.PostAuthorize;
@@ -27,6 +28,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserService implements IUserService {
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
 
@@ -49,6 +51,7 @@ public class UserService implements IUserService {
 
     @Override
     @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasAuthority('APPROVE_POST')")
     // kiểm tra trước khi gọi method phải có role hợp lệ thì method mới thực thi, còn lại thì k thực thi
     public List<UserResponse> getUsers() {
         log.info("In method getUsers");
@@ -74,6 +77,11 @@ public class UserService implements IUserService {
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
         userMapper.updateUser(user, request);
+
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+
+        List<org.example.identityservice.entity.Role> roles = roleRepository.findAllById(request.getRoles());
+        user.setRoles(new HashSet<>(roles));
 
         return userMapper.mapUserToUserResponse(userRepository.save(user));
     }

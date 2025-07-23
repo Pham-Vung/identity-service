@@ -5,12 +5,14 @@ import org.example.identityservice.DTO.request.UserUpdateRequest;
 import org.example.identityservice.DTO.response.UserResponse;
 import org.example.identityservice.entity.User;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
     User mapUserCreationRequestToUser(UserCreationRequest userCreationRequest);
 
+    @Mapping(target = "roles", ignore = true)
     void updateUser(@MappingTarget User user, UserUpdateRequest request);
 
     UserResponse mapUserToUserResponse(User user);

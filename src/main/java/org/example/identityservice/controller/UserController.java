@@ -9,6 +9,7 @@ import org.example.identityservice.DTO.response.ApiResponse;
 import org.example.identityservice.DTO.response.UserResponse;
 import org.example.identityservice.service.interfaces.IUserService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,6 +32,12 @@ public class UserController {
 
     @GetMapping("/get-all")
     public ResponseEntity<ApiResponse<List<UserResponse>>> getUsers() {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        log.info("Username : {}", authentication.getName());
+        authentication.getAuthorities().forEach(grantedAuthority -> {
+            log.info("GrantedAuthority : {}", grantedAuthority.getAuthority());
+        });
+
         ApiResponse<List<UserResponse>> response = ApiResponse.<List<UserResponse>>builder()
                 .result(userService.getUsers())
                 .build();
