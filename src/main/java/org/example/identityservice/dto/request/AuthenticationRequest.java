@@ -1,4 +1,4 @@
-package org.example.identityservice.DTO.request;
+package org.example.identityservice.dto.request;
 
 import lombok.*;
 

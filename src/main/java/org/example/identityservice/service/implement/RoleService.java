@@ -1,8 +1,8 @@
 package org.example.identityservice.service.implement;
 
 import lombok.RequiredArgsConstructor;
-import org.example.identityservice.DTO.request.RoleRequest;
-import org.example.identityservice.DTO.response.RoleResponse;
+import org.example.identityservice.dto.request.RoleRequest;
+import org.example.identityservice.dto.response.RoleResponse;
 import org.example.identityservice.entity.Permission;
 import org.example.identityservice.entity.Role;
 import org.example.identityservice.mapper.RoleMapper;

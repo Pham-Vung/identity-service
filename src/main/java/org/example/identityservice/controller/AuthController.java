@@ -2,11 +2,11 @@ package org.example.identityservice.controller;
 
 import com.nimbusds.jose.JOSEException;
 import lombok.RequiredArgsConstructor;
-import org.example.identityservice.DTO.request.AuthenticationRequest;
-import org.example.identityservice.DTO.request.IntrospectRequest;
-import org.example.identityservice.DTO.response.ApiResponse;
-import org.example.identityservice.DTO.response.AuthenticationResponse;
-import org.example.identityservice.DTO.response.IntrospectResponse;
+import org.example.identityservice.dto.request.AuthenticationRequest;
+import org.example.identityservice.dto.request.IntrospectRequest;
+import org.example.identityservice.dto.response.ApiResponse;
+import org.example.identityservice.dto.response.AuthenticationResponse;
+import org.example.identityservice.dto.response.IntrospectResponse;
 import org.example.identityservice.service.interfaces.IAuthService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

@@ -2,9 +2,9 @@ package org.example.identityservice.service.implement;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.identityservice.DTO.request.UserCreationRequest;
-import org.example.identityservice.DTO.request.UserUpdateRequest;
-import org.example.identityservice.DTO.response.UserResponse;
+import org.example.identityservice.dto.request.UserCreationRequest;
+import org.example.identityservice.dto.request.UserUpdateRequest;
+import org.example.identityservice.dto.response.UserResponse;
 import org.example.identityservice.entity.User;
 import org.example.identityservice.enums.Role;
 import org.example.identityservice.exception.AppException;

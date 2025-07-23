@@ -1,7 +1,7 @@
 package org.example.identityservice.mapper;
 
-import org.example.identityservice.DTO.request.PermissionRequest;
-import org.example.identityservice.DTO.response.PermissionResponse;
+import org.example.identityservice.dto.request.PermissionRequest;
+import org.example.identityservice.dto.response.PermissionResponse;
 import org.example.identityservice.entity.Permission;
 import org.mapstruct.Mapper;
 

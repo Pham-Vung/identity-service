@@ -1,6 +1,6 @@
 package org.example.identityservice.exception;
 
-import org.example.identityservice.DTO.response.ApiResponse;
+import org.example.identityservice.dto.response.ApiResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;

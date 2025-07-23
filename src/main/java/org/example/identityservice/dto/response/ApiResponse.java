@@ -1,4 +1,4 @@
-package org.example.identityservice.DTO.response;
+package org.example.identityservice.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;

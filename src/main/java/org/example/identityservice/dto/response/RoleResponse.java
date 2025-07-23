@@ -1,4 +1,4 @@
-package org.example.identityservice.DTO.request;
+package org.example.identityservice.dto.response;
 
 import lombok.*;
 
@@ -9,8 +9,8 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class RoleRequest {
+public class RoleResponse {
     private String name;
     private String description;
-    private Set<String> permissions;
+    private Set<PermissionResponse> permissions;
 }

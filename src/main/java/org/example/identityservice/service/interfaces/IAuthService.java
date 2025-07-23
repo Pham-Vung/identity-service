@@ -1,10 +1,10 @@
 package org.example.identityservice.service.interfaces;
 
 import com.nimbusds.jose.JOSEException;
-import org.example.identityservice.DTO.request.AuthenticationRequest;
-import org.example.identityservice.DTO.request.IntrospectRequest;
-import org.example.identityservice.DTO.response.AuthenticationResponse;
-import org.example.identityservice.DTO.response.IntrospectResponse;
+import org.example.identityservice.dto.request.AuthenticationRequest;
+import org.example.identityservice.dto.request.IntrospectRequest;
+import org.example.identityservice.dto.response.AuthenticationResponse;
+import org.example.identityservice.dto.response.IntrospectResponse;
 
 import java.text.ParseException;
 

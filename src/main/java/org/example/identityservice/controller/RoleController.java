@@ -1,9 +1,9 @@
 package org.example.identityservice.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.example.identityservice.DTO.request.RoleRequest;
-import org.example.identityservice.DTO.response.ApiResponse;
-import org.example.identityservice.DTO.response.RoleResponse;
+import org.example.identityservice.dto.request.RoleRequest;
+import org.example.identityservice.dto.response.ApiResponse;
+import org.example.identityservice.dto.response.RoleResponse;
 import org.example.identityservice.service.interfaces.IRoleService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

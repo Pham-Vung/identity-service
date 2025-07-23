@@ -1,8 +1,8 @@
 package org.example.identityservice.service.interfaces;
 
-import org.example.identityservice.DTO.request.UserCreationRequest;
-import org.example.identityservice.DTO.request.UserUpdateRequest;
-import org.example.identityservice.DTO.response.UserResponse;
+import org.example.identityservice.dto.request.UserCreationRequest;
+import org.example.identityservice.dto.request.UserUpdateRequest;
+import org.example.identityservice.dto.response.UserResponse;
 
 import java.util.List;
 

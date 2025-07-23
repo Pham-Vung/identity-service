@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.example.identityservice.DTO.response.ApiResponse;
+import org.example.identityservice.dto.response.ApiResponse;
 import org.example.identityservice.exception.ErrorCode;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;

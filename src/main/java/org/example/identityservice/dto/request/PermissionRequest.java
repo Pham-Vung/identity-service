@@ -1,4 +1,4 @@
-package org.example.identityservice.DTO.response;
+package org.example.identityservice.dto.request;
 
 import lombok.*;
 
@@ -7,7 +7,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PermissionResponse {
+public class PermissionRequest {
     private String name;
     private String description;
 }
