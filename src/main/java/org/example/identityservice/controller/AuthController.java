@@ -4,6 +4,7 @@ import com.nimbusds.jose.JOSEException;
 import lombok.RequiredArgsConstructor;
 import org.example.identityservice.dto.request.AuthenticationRequest;
 import org.example.identityservice.dto.request.IntrospectRequest;
+import org.example.identityservice.dto.request.LogoutRequest;
 import org.example.identityservice.dto.response.ApiResponse;
 import org.example.identityservice.dto.response.AuthenticationResponse;
 import org.example.identityservice.dto.response.IntrospectResponse;
@@ -38,5 +39,11 @@ public class AuthController {
                 .build();
 
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/log-out")
+    public ResponseEntity<ApiResponse<Void>> logout(@RequestBody LogoutRequest request) throws ParseException, JOSEException {
+        authService.logout(request);
+        return ResponseEntity.ok(ApiResponse.<Void>builder().build());
     }
 }

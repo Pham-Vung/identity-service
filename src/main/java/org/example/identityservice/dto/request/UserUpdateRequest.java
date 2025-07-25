@@ -1,8 +1,8 @@
 package org.example.identityservice.dto.request;
 
-import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.example.identityservice.validator.DateOfBirthConstraint;
+import org.example.identityservice.validator.PasswordConstraint;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 public class UserUpdateRequest {
 
-    @Size(min = 8, message = "INVALID_PASSWORD")
+    @PasswordConstraint(min = 8, max = 15, message = "INVALID_PASSWORD")
     private String password;
 
     private String firstName;

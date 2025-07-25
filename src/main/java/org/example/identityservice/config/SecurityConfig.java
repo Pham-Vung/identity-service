@@ -1,6 +1,5 @@
 package org.example.identityservice.config;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -10,23 +9,16 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
-
-import javax.crypto.spec.SecretKeySpec;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
-    private final String[] PUBLIC_URLS = {"/users/create", "/auth/log-ịn", "/auth/introspect"};
-
-    @Value("${jwt.signerKey}")
-    private String signerKey;
+    private final String[] PUBLIC_URLS = {"/users/create", "/auth/log-ịn", "/auth/introspect", "/auth/log-out"};
+    private CustomJwtDecoder jwtDecoder;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -51,7 +43,7 @@ public class SecurityConfig {
         //"Mỗi request phải có JWT trong header. Và khi nhận được, hãy dùng hàm jwtDecoder() để kiểm tra và phân tích token đó."
         http.oauth2ResourceServer(oauth2 ->
                 oauth2.jwt(jwtConfigurer ->
-                                jwtConfigurer.decoder(jwtDecoder())
+                                jwtConfigurer.decoder(jwtDecoder)
                                         .jwtAuthenticationConverter(jwtAuthenticationConverter())) // chuyển JWT -> Authentication
                         .authenticationEntryPoint(new JwtAuthenticationEntryPoint()) // xảy ra ngoại lệ trong filterChain sẽ xử lý ở đây
         );
@@ -75,12 +67,13 @@ public class SecurityConfig {
      * và server sẽ dùng NimbusJwtDecoder để giải mã,
      * xác minh chữ ký, kiểm tra hạn token.
      */
-    @Bean
-    public JwtDecoder jwtDecoder() {
-        SecretKeySpec secretKeySpec = new SecretKeySpec(signerKey.getBytes(), "HS512");
-        return NimbusJwtDecoder
-                .withSecretKey(secretKeySpec)
-                .macAlgorithm(MacAlgorithm.HS512)
-                .build();
-    }
+//    @Bean
+//    public JwtDecoder jwtDecoder() {
+//        SecretKeySpec secretKeySpec = new SecretKeySpec(signerKey.getBytes(), "HS512");
+//        return NimbusJwtDecoder
+//                .withSecretKey(secretKeySpec)
+//                .macAlgorithm(MacAlgorithm.HS512)
+//                .build();
+//    }
+
 }

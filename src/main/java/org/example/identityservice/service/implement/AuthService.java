@@ -9,11 +9,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.identityservice.dto.request.AuthenticationRequest;
 import org.example.identityservice.dto.request.IntrospectRequest;
+import org.example.identityservice.dto.request.LogoutRequest;
 import org.example.identityservice.dto.response.AuthenticationResponse;
 import org.example.identityservice.dto.response.IntrospectResponse;
+import org.example.identityservice.entity.InvalidatedToken;
 import org.example.identityservice.entity.User;
 import org.example.identityservice.exception.AppException;
 import org.example.identityservice.exception.ErrorCode;
+import org.example.identityservice.repository.InvalidatedTokenRepository;
 import org.example.identityservice.repository.UserRepository;
 import org.example.identityservice.service.interfaces.IAuthService;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,12 +29,14 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.StringJoiner;
+import java.util.UUID;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthService implements IAuthService {
     private final UserRepository userRepository;
+    private final InvalidatedTokenRepository invalidatedTokenRepository;
 
     @Value("${jwt.signerKey}")
     protected String SIGNER_KEY;
@@ -60,6 +65,36 @@ public class AuthService implements IAuthService {
     @Override
     public IntrospectResponse introspect(IntrospectRequest request) throws ParseException, JOSEException {
         String token = request.getToken();
+
+        boolean isValid = true;
+
+        try {
+            verifyToken(token);
+        } catch (AppException e) {
+            isValid = false;
+        }
+
+        return IntrospectResponse.builder()
+                .isValid(isValid)
+                .build();
+    }
+
+    @Override
+    public void logout(LogoutRequest request) throws ParseException, JOSEException {
+        SignedJWT signToken = verifyToken(request.getToken());
+
+        String jit = signToken.getJWTClaimsSet().getJWTID();
+        Date expiryDate = signToken.getJWTClaimsSet().getExpirationTime();
+
+        InvalidatedToken invalidatedToken = InvalidatedToken.builder()
+                .id(jit)
+                .expiryTime(expiryDate)
+                .build();
+
+        invalidatedTokenRepository.save(invalidatedToken);
+    }
+
+    private SignedJWT verifyToken(String token) throws ParseException, JOSEException {
         JWSVerifier verifier = new MACVerifier(SIGNER_KEY.getBytes());
 
         SignedJWT signedJWT = SignedJWT.parse(token);
@@ -68,9 +103,17 @@ public class AuthService implements IAuthService {
 
         Date expiryTime = signedJWT.getJWTClaimsSet().getExpirationTime();
 
-        return IntrospectResponse.builder()
-                .isValid(verified && expiryTime.after(new Date()))
-                .build();
+        if (!verified || expiryTime.before(new Date())) {
+            throw new AppException(ErrorCode.UNAUTHENTICATED);
+        }
+
+
+        if (invalidatedTokenRepository
+                .existsById(signedJWT.getJWTClaimsSet().getJWTID())) {
+            throw new AppException(ErrorCode.UNAUTHENTICATED);
+        }
+
+        return signedJWT;
     }
 
     private String generateToken(User user) {
@@ -83,6 +126,7 @@ public class AuthService implements IAuthService {
                 .expirationTime(new Date(
                         Instant.now().plus(1, ChronoUnit.HOURS).toEpochMilli()
                 )) // thời hạn su dụng
+                .jwtID(UUID.randomUUID().toString())
                 .claim("scope", buildScope(user))
                 .build();
 

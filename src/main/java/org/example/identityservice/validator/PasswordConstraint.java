@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Constraint(validatedBy = {PasswordValidator.class})
 public @interface PasswordConstraint {
-    String message() default "Must be 8 to 15 characters long, combining uppercase, lowercase, special characters and numbers.";
+    String message() default "Invalid password";
 
     int min();
 

@@ -59,8 +59,10 @@ public class GlobalExceptionHandler {
 
     private String mapAttribute(String message, Map<String, Object> attributes) {
         String minValue = attributes.get(MIN_ATTRIBUTE).toString();
+        String maxValue = attributes.get(MAX_ATTRIBUTE).toString();
+
         return message.replace("{" + MIN_ATTRIBUTE + "}", minValue)
-                .replace("{" + MAX_ATTRIBUTE + "}", attributes.get(MAX_ATTRIBUTE).toString());
+                .replace("{" + MAX_ATTRIBUTE + "}", maxValue);
     }
 
     @ExceptionHandler(value = {AppException.class})
