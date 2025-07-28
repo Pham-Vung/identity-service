@@ -17,7 +17,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
-    private final String[] PUBLIC_URLS = {"/users/create", "/auth/log-ịn", "/auth/introspect", "/auth/log-out"};
+    private final String[] PUBLIC_URLS = {"/users/create", "/auth/log-ịn", "/auth/introspect", "/auth/log-out", "/auth/refresh"};
     private CustomJwtDecoder jwtDecoder;
 
     @Bean
